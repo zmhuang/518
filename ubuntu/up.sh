@@ -1,3 +1,4 @@
 #!/bin/sh
+set -e
 sudo /bin/cp hosts /etc -v
-sudo /bin/cp myprofile ~/.myprofile
+/bin/cp myprofile ~/.myprofile -v
