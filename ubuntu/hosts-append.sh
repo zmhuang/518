@@ -7,6 +7,6 @@ FILE=/tmp/hosts
 cat hosts-append >> $FILE
 
 hn=`hostname`
-echo "127.0.0.1\t$hn" >> $hn
+echo "127.0.0.1\t$hn" >> $FILE
 
-sudo cp /tmp/hosts /etc/hosts
+sudo cp $FILE /etc/hosts
