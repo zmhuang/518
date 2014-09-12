@@ -22,6 +22,9 @@ do
     fi
 done
 
+IP=`grep -m 1 www.googleusercontent.com hosts | cut -f 1`
+echo -e "${IP}\twww-trixcopysheet-opensocial.googleusercontent.com" >> $FILE
+
 hn=`hostname`
 echo -e "127.0.0.1\t$hn" >> $FILE
 
