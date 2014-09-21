@@ -24,7 +24,7 @@ do
 done
 
 IP=`grep -m 1 www.googleusercontent.com hosts | cut -f 1`
-for i in doc-0o-0o-docs.googleusercontent.com www-trixcopysheet-opensocial.googleusercontent.com;
+for i in doc-08-0o-docs.googleusercontent.com doc-0o-0o-docs.googleusercontent.com www-trixcopysheet-opensocial.googleusercontent.com;
 do
 echo -e "${IP}\t${i}" >> $FILE
 done
