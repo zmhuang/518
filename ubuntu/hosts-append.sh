@@ -28,6 +28,12 @@ do
 echo -e "${IP}\t${i}" >> $FILE
 done
 
+IP=`grep -m 1 0.docs.google.com hosts | cut -f 1`
+for i in {10..50};
+do
+echo -e "${IP}\t${i}.docs.google.com" >> $FILE
+done
+
 hn=`hostname`
 echo -e "127.0.0.1\t$hn" >> $FILE
 
