@@ -1,0 +1,81 @@
+#!/bin/bash
+set -e
+set -x
+#exec &>/tmp/LOG
+
+LANG=C
+IFACE=ppp0
+if [ $IFACE != ppp0 ] ; then
+   exit 0
+fi
+
+IPT=/sbin/iptables
+
+# Internet Interface
+INET_IFACE=$IFACE
+INET_ADDRESS=`ifconfig ppp0 | grep inet | tr ' ' '\n'| grep '^addr'  | cut -d : -f 2`
+INET_GW=`ifconfig ppp0  | grep inet | tr ' ' '\n'| grep '^P-t-P' | cut -d : -f 2`
+
+# Local Interface Information
+LOCAL_IFACE="eth0"
+LOCAL_IP="192.168.0.1"
+LOCAL_NET="192.168.0.0/24"
+
+# Flush the tables 
+$IPT -F INPUT
+$IPT -F OUTPUT 
+$IPT -F FORWARD 
+$IPT -F -t nat  
+
+# Define default policy to DROP packets
+$IPT -P INPUT   DROP
+$IPT -P OUTPUT  DROP
+$IPT -P FORWARD DROP
+$IPT -t nat -P PREROUTING ACCEPT
+$IPT -t nat -P POSTROUTING ACCEPT
+$IPT -t nat -P OUTPUT ACCEPT
+
+# Delete the optional user-defined chains specified
+$IPT -X
+$IPT -t nat -X
+$IPT -t mangle -X
+
+# Allow ICMP types ('echo request/reply' and 'time exceeded') traffic 
+$IPT -A INPUT -i $INET_IFACE -p icmp  --icmp-type 0 -j ACCEPT
+$IPT -A INPUT -i $INET_IFACE -p icmp  --icmp-type 8 -j ACCEPT
+$IPT -A INPUT -i $INET_IFACE -p icmp  --icmp-type 11 -j ACCEPT
+$IPT -A OUTPUT  -p icmp --icmp-type 0 -j ACCEPT
+$IPT -A OUTPUT  -p icmp --icmp-type 8 -j ACCEPT
+$IPT -A OUTPUT  -p icmp --icmp-type 11 -j ACCEPT
+
+# Permit DNS traffic
+$IPT -A INPUT -i $INET_IFACE -p udp --dport 53 -j ACCEPT
+$IPT -A OUTPUT -p udp --sport 53 -j ACCEPT
+
+# Accept network return traffic from the internet:
+$IPT -A INPUT -i $INET_IFACE -m state -p tcp --dport 1024:65535 --state ESTABLISHED,RELATED  -j ACCEPT 
+$IPT -A OUTPUT -m state -p tcp --sport 1024:65535 ! --state INVALID  -j ACCEPT
+
+
+# Accept SSH traffic from the internet
+$IPT -A INPUT -i $INET_IFACE  -m state -p tcp -s 128.6.0.0/16 --dport 22 ! --state INVALID -j ACCEPT
+$IPT -A OUTPUT -m state -p tcp --sport 22 --state ESTABLISHED,RELATED -j ACCEPT
+
+# Accept all local (loopback) traffic on the lo interface
+$IPT -A INPUT -s 127.0.0.1 -i lo -j ACCEPT
+$IPT -A OUTPUT -d 127.0.0.1 -o lo -j ACCEPT
+
+# Accept private subnet traffic on LOCAL_IFACE 
+$IPT -A INPUT -s $LOCAL_NET -i $LOCAL_IFACE -j ACCEPT
+$IPT -A OUTPUT -d $LOCAL_NET -o $LOCAL_IFACE -j ACCEPT
+
+# Allow forwarding packets:
+$IPT -A FORWARD -p ALL -i $LOCAL_IFACE -j ACCEPT
+$IPT -A FORWARD -i $INET_IFACE -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# Packet masquerading
+$IPT -t nat -A POSTROUTING -o $INET_IFACE -j SNAT --to-source $INET_ADDRESS
+
+# Log all other traffic
+$IPT -A INPUT -j LOG
+$IPT -A OUTPUT -j LOG

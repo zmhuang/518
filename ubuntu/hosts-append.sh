@@ -2,15 +2,11 @@
 set -e
 set -x
 
-cd /tmp
-
 FILE=hosts
 
-# 1、下载 hosts 文件
-#7z e -y imouto.host.7z
-mv imouto.host.txt $FILE
-fromdos $FILE
+cd /tmp
 
+fromdos $FILE
 echo >> $FILE
 
 # 2、添加一些条目
