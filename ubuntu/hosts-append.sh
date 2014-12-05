@@ -25,7 +25,7 @@ echo -e "${IP}\t${i}" >> $FILE
 done
 
 IP=`grep -m 1 0.docs.google.com hosts | sed 's/\([0-9.]\+\).*/\1/'`
-for i in {10..50};
+for i in {10..100};
 do
 echo -e "${IP}\t${i}.docs.google.com" >> $FILE
 ((++i))
