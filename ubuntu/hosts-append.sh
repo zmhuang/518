@@ -32,6 +32,7 @@ echo -e "${IP}\t${i}.docs.google.com" >> $FILE
 done
 
 echo -e "68.232.35.117   static.mentor-cdn.com" >> $FILE
+echo -e "72.15.153.164   www.codepool.biz" >> $FILE
 
 hn=`hostname`
 echo -e "127.0.0.1\t$hn" >> $FILE
