@@ -19,7 +19,7 @@ do
 done
 
 IP=`grep -m 1 www.googleusercontent.com hosts | sed 's/\([0-9.]\+\).*/\1/'`
-for i in doc-08-0o-docs.googleusercontent.com doc-0o-0o-docs.googleusercontent.com www-trixcopysheet-opensocial.googleusercontent.com doc-04-0o-docs.googleusercontent.com doc-0s-0o-docs.googleusercontent.com; 
+for i in doc-08-0o-docs.googleusercontent.com doc-0o-0o-docs.googleusercontent.com www-trixcopysheet-opensocial.googleusercontent.com doc-04-0o-docs.googleusercontent.com doc-0s-0o-docs.googleusercontent.com doc-10-0o-docs.googleusercontent.com; 
 do
 echo -e "${IP}\t${i}" >> $FILE
 done
