@@ -41,6 +41,7 @@ echo -e "127.0.0.1\t$hn" >> $FILE
 for i in dl.google.com dl.l.google.com dl-ssl.google.com;
 do
 sed -i '/$i/ d' $FILE
+echo -e "203.208.49.164	$i" >> $FILE
 done
 
 sudo cp $FILE /etc/hosts
