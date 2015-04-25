@@ -37,4 +37,10 @@ echo -e "72.15.153.164   www.codepool.biz" >> $FILE
 hn=`hostname`
 echo -e "127.0.0.1\t$hn" >> $FILE
 
+# dl 应当使用 nslookup 结果，以提升下载速度
+for i in dl.google.com dl.l.google.com dl-ssl.google.com;
+do
+sed -i '/$i/ d' $FILE
+done
+
 sudo cp $FILE /etc/hosts
