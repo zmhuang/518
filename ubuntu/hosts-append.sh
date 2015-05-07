@@ -40,7 +40,7 @@ echo -e "127.0.0.1\t$hn" >> $FILE
 # dl 应当使用 nslookup 结果，以提升下载速度
 for i in dl.google.com dl.l.google.com dl-ssl.google.com;
 do
-sed -i '/$i/ d' $FILE
+sed -i "/$i/ d" $FILE
 echo -e "203.208.49.164	$i" >> $FILE
 done
 
