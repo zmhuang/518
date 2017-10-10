@@ -1,0 +1,3 @@
+#!/bin/bash
+set -e
+sudo /bin/cp 51-android.rules /etc/udev/rules.d/
